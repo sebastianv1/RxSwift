@@ -13,10 +13,24 @@ import RxSwift
  */
 playgroundShouldContinueIndefinitely()
 
-example("Try yourself") {
-  // let disposeBag = DisposeBag()
-  _ = Observable.just("Hello, RxSwift!")
-    .debug("Observable")
-    .subscribe()
-    // .disposed(by: disposeBag) // If dispose bag is used instead, sequence will terminate on scope exit
+import Dispatch
+
+let (signal, sink) = RxSignal<Int>.pipe()
+
+signal.emitValues { (event) in
+    switch event {
+    case .next(let val):
+        print(val)
+    case .error(let e):
+        print("Error: \(e)")
+    case .completed:
+        print("Completed")
+    }
+}
+
+sink.onNext(3)
+sink.onCompleted()
+
+signal.emitValues { (event) in
+    print(event)
 }
